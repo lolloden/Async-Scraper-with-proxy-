@@ -6,15 +6,6 @@ from colorama import Fore
 import os.path
 
 
-class TooManyRetries(Exception):
-    def __str__(self):
-        class_name = type(self).__name__
-        exception_args = self.args
-        if len(exception_args) > 0:
-            return f'{class_name}: {exception_args[0]}'
-        return class_name
-
-
 class Bot:
     link_list = []
     filename_list = []
@@ -41,9 +32,9 @@ class Bot:
         for retry_num in range(max_retries):
             try:
                 return await asyncio.wait_for(coro, timeout=timeout)
-            except TooManyRetries as e:
+            except Exception as e:
                 # catch any exception because we want to retry upon any failure
-                print(f'request to {url} failed. (tried {retry_num + 1} times)')
+                print(Fore.LIGHTRED_EX + f'{e.__class__}. Request to {url} failed. (tried {retry_num + 1} times)')
                 await asyncio.sleep(retry_interval)
 
     async def fetch(self, client, url):
@@ -70,7 +61,6 @@ class Bot:
         else:
             self.proxies_in_use.clear()
             return self.allocate_proxy()
-            # proxy = random.choice(proxies) 
         try:
             self.proxies_in_use.append(proxy)
             yield proxy
@@ -83,7 +73,6 @@ class Bot:
             url = await q.get()
             try:
                 html = await self.retry(self.fetch(client, url), url)
-                # html = await self.fetch(client, url)   # use this for skip retry feature
             except Exception as e:
                 print(Fore.LIGHTRED_EX + f"error: {e.__class__}")
                 await asyncio.sleep(0.5)
@@ -91,6 +80,7 @@ class Bot:
                 filename_index = self.link_list.index(f"{url}")
                 filename = str(self.filename_list[filename_index])
                 await loop.run_in_executor(None, self.save_to_disk, url, html, filename)
+                # await loop.run_in_executor(None, self.get_title, html, url)
             finally:
                 q.task_done()
 
@@ -100,7 +90,6 @@ class Bot:
         try:
             file = open(f"results/{f_name}.txt", 'r')
             print(Fore.LIGHTMAGENTA_EX + "file exists")
-            # sometimes response can be null, rewrite file with new response
             if os.stat(f"results/{f_name}.txt").st_size == 0:
                 if len(html) > 0:
                     file = open(f"results/{f_name}.txt", 'w')
@@ -110,3 +99,13 @@ class Bot:
             if len(html) > 0:
                 file = open(f"results/{f_name}.txt", 'w')
                 file.write(str(soup))
+
+    def get_title(self, html: str, url: str) -> str:
+        print(Fore.CYAN + f"Getting TITLE for page {url}", flush=True)
+        soup = BeautifulSoup(html, 'html.parser')
+        header = soup.select_one('h1')
+        if not header:
+            return "MISSING"
+        res = str(header.text.strip())
+        print(res)
+        return res

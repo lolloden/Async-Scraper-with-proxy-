@@ -10,4 +10,6 @@ I mention some of them:
 - Scraping 10,000 records at once with aiohttp (https://www.toughdata.net/blog/post/scrape-10000-records-concurrently-aiohttp)
 - Faster web scraping with Python and asyncio  (https://embracingtherandom.com/software/python/faster-web-scraping-with-asyncio/)
 
+There is also a ready-to-go http/https free proxy list that you can use for your needs.
+
 Hope this helps ;)

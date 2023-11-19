@@ -1,4 +1,5 @@
-# Async-Scraper-with-proxy-
+#  Async-web-scraper-with-proxy
+
 Async web scraper with proxy rotation in Python.
 
 This is a simple web scraper in Python.

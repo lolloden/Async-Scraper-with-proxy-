@@ -6,6 +6,15 @@ from colorama import Fore
 import os.path
 
 
+class TooManyRetries(Exception):
+    def __str__(self):
+        class_name = type(self).__name__
+        exception_args = self.args
+        if len(exception_args) > 0:
+            return f'{class_name}: {exception_args[0]}'
+        return class_name
+
+
 class Bot:
     link_list = []
     filename_list = []
@@ -32,9 +41,9 @@ class Bot:
         for retry_num in range(max_retries):
             try:
                 return await asyncio.wait_for(coro, timeout=timeout)
-            except Exception as e:
+            except TooManyRetries as e:
                 # catch any exception because we want to retry upon any failure
-                print(Fore.LIGHTRED_EX + f'{e.__class__}. Request to {url} failed. (tried {retry_num + 1} times)')
+                print(f'request to {url} failed. (tried {retry_num + 1} times)')
                 await asyncio.sleep(retry_interval)
 
     async def fetch(self, client, url):

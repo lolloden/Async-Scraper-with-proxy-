@@ -70,6 +70,7 @@ class Bot:
         else:
             self.proxies_in_use.clear()
             return self.allocate_proxy()
+            # proxy = random.choice(proxies) 
         try:
             self.proxies_in_use.append(proxy)
             yield proxy
@@ -82,6 +83,7 @@ class Bot:
             url = await q.get()
             try:
                 html = await self.retry(self.fetch(client, url), url)
+                # html = await self.fetch(client, url)   # use this for skip retry feature
             except Exception as e:
                 print(Fore.LIGHTRED_EX + f"error: {e.__class__}")
                 await asyncio.sleep(0.5)

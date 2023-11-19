@@ -8,7 +8,7 @@ valid_proxies = []
 valids = f"valid_proxies.txt"
 open(valids, 'w').close()  # erase file content
 
-with open("proxies.txt", "r") as f:     # https://github.com/TheSpeedX/PROXY-List/blob/master/http.txt
+with open("proxies.txt", "r") as f:    
     proxies = f.read().split("\n")
     for p in proxies:
         q.put(p)

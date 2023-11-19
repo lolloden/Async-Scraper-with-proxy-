@@ -66,8 +66,8 @@ class Bot:
         available_proxies = [p for p in self.proxies if p not in self.proxies_in_use]  # Select proxies that are not in use
         if available_proxies:
             proxy = random.choice(available_proxies)
-
         else:
+            # proxy = random.choice(proxies)
             self.proxies_in_use.clear()
             return self.allocate_proxy()
         try:

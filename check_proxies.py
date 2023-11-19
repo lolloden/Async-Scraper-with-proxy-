@@ -1,18 +1,18 @@
 import threading
 import queue
 import requests
-import re
 
 q = queue.Queue()
 valid_proxies = []
 valids = f"valid_proxies.txt"
 open(valids, 'w').close()  # erase file content
 
-with open("proxies.txt", "r") as f:    
+with open("proxies.txt", "r") as f:
     proxies = f.read().split("\n")
     for p in proxies:
         q.put(p)
-f.close()
+    f.close()
+
 count = 0
 
 
@@ -35,11 +35,14 @@ def check_proxies():
             print("error!")
             continue
         if res.status_code == 200:
-            count += 1
-            with open(valids, 'a') as myfile:
-                myfile.write(proxy + '\n')
-                print(f"{count} : {proxy}")
+            with open(valids, 'a+') as myfile:
+                if count == 0:
+                    myfile.write(proxy)
+                else:
+                    myfile.write(f'\n{proxy}')
 
+            count += 1
+            print(f"{count} : {proxy}")
             myfile.close()
 
 

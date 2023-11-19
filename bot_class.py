@@ -100,6 +100,7 @@ class Bot:
         try:
             file = open(f"results/{f_name}.txt", 'r')
             print(Fore.LIGHTMAGENTA_EX + "file exists")
+            # sometimes response can be null, rewrite file with new response
             if os.stat(f"results/{f_name}.txt").st_size == 0:
                 if len(html) > 0:
                     file = open(f"results/{f_name}.txt", 'w')

@@ -2,8 +2,8 @@
 
 Async web scraper with proxy rotation in Python.
 
-This is a simple web scraper in Python.
-It uses aiohttp and BeautifulSoup modules.
+This is a simple web scraper in Python using aiohttp and BeautifulSoup modules.
+Since i am relatively new to Python i consider this project as an in-depth study on async programming.
 The program is based on tutorials i've found online + answers from stackoverflow.com mixed all together. 
 I mention some of them:
 - NeuralNine's Rotating Proxies For Web Requests in Python (https://www.youtube.com/watch?v=FbtCl9jJyyc)

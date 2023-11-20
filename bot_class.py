@@ -24,8 +24,8 @@ class Bot:
         "Mozilla/5.0 (Linux; Android 12; 2201116SG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0",
         "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 Edg/109.0.1518.10",
-        ""]
-    headers = {'User-Agent': ua_list[3]}
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604."]
+    headers = {'User-Agent': ua_list[5]}
 
     with open("valid_proxies.txt", "r") as pf:
         proxies = pf.read().split("\n")
@@ -37,14 +37,15 @@ class Bot:
     #     f"http://books.toscrape.com/catalogue/page-{x}.html" for x in range(1, 11)
     # ]
 
-    async def retry(self, coro, url, max_retries=3, timeout=2.0, retry_interval=1.0):
+    async def retry(self, coro, url, max_retries=2, timeout=2.0, retry_interval=1.0):
         for retry_num in range(max_retries):
             try:
                 return await asyncio.wait_for(coro, timeout=timeout)
-            except TooManyRetries as e:
+            except Exception as e:
                 # catch any exception because we want to retry upon any failure
-                print(f'request to {url} failed. (tried {retry_num + 1} times)')
+                print(f'{e.__class__}: request to {url} failed. (tried {retry_num + 1} times)')
                 await asyncio.sleep(retry_interval)
+        raise TooManyRetries(url)
 
     async def fetch(self, client, url):
         with self.allocate_proxy() as proxy:
@@ -66,8 +67,8 @@ class Bot:
         available_proxies = [p for p in self.proxies if p not in self.proxies_in_use]  # Select proxies that are not in use
         if available_proxies:
             proxy = random.choice(available_proxies)
+
         else:
-            # proxy = random.choice(proxies)
             self.proxies_in_use.clear()
             return self.allocate_proxy()
         try:
